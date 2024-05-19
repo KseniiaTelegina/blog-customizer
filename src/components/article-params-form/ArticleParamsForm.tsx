@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { ArrowButton } from 'components/arrow-button';
 import { Button } from 'components/button';
 import { Text } from '../text';
 import { RadioGroup } from '../radio-group';
 import { Select } from '../select';
 import { Separator } from '../separator';
+import { useOutsideClickClose } from '../select/hooks/useOutsideClickClose';
 import { OptionType, fontFamilyOptions, fontColors, backgroundColors, contentWidthArr, fontSizeOptions, defaultArticleState, ArticleStateType } from 'src/constants/articleProps';
 import styles from './ArticleParamsForm.module.scss';
 import clsx from 'clsx';
@@ -15,8 +16,18 @@ type ArticleParamsFormProps = {
 };
 
 export const ArticleParamsForm = ({ currentSettings, onApplySettings }: ArticleParamsFormProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [formState, setFormState] = useState<ArticleStateType>(currentSettings);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+
+  useOutsideClickClose({
+	isOpen: isMenuOpen,
+	rootRef,
+	// onClose: () => setIsMenuOpen(false),
+	onChange: setIsMenuOpen,
+  });
+
 
   const handleOptionChange = (optionType: keyof ArticleStateType) => (selected: OptionType) => {
     setFormState((prevState) => ({
@@ -26,7 +37,7 @@ export const ArticleParamsForm = ({ currentSettings, onApplySettings }: ArticleP
   };
 
   const toggleForm = () => {
-    setIsOpen(!isOpen);
+    setIsMenuOpen(!isMenuOpen);
   };
 
   const handleReset = () => {
@@ -41,8 +52,10 @@ export const ArticleParamsForm = ({ currentSettings, onApplySettings }: ArticleP
 
   return (
     <>
-      <ArrowButton onClick={toggleForm} isOpen={isOpen} />
-      <aside className={clsx(styles.container, isOpen && styles.container_open)}>
+      <ArrowButton onClick={toggleForm} isOpen={isMenuOpen} />
+      <aside
+	   ref={rootRef}
+	   className={clsx(styles.container, isMenuOpen && styles.container_open)}>
         <form className={styles.form} onSubmit={handleSubmit}>
           <Text as="h2" size={31} weight={800} align="left" uppercase>Задайте параметры</Text>
           <Select

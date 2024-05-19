@@ -24,7 +24,6 @@ export const ArticleParamsForm = ({ currentSettings, onApplySettings }: ArticleP
   useOutsideClickClose({
 	isOpen: isMenuOpen,
 	rootRef,
-	// onClose: () => setIsMenuOpen(false),
 	onChange: setIsMenuOpen,
   });
 
@@ -51,10 +50,10 @@ export const ArticleParamsForm = ({ currentSettings, onApplySettings }: ArticleP
   };
 
   return (
-    <>
+    <div ref={rootRef}>
       <ArrowButton onClick={toggleForm} isOpen={isMenuOpen} />
       <aside
-	   ref={rootRef}
+
 	   className={clsx(styles.container, isMenuOpen && styles.container_open)}>
         <form className={styles.form} onSubmit={handleSubmit}>
           <Text as="h2" size={31} weight={800} align="left" uppercase>Задайте параметры</Text>
@@ -96,6 +95,6 @@ export const ArticleParamsForm = ({ currentSettings, onApplySettings }: ArticleP
           </div>
         </form>
       </aside>
-    </>
+    </div>
   );
 };
